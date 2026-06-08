@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom"; // 👈 useSearchParams ko import kiya
 import API from "../api";
 
-import Sidebar from "../components/home/resume/Sidebar.jsx";
-import PersonalInfoForm from "../components/home/resume/PersonalInfoForm.jsx";
-import EducationForm from "../components/home/resume/EducationForm.jsx";
-import ExperienceForm from "../components/home/resume/ExperienceForm.jsx";
-import SkillsForm from "../components/home/resume/SkillsForm.jsx";
-import ProjectsForm from "../components/home/resume/ProjectsForm.jsx";
-import ResumePreview from "../components/home/resume/ResumePreview.jsx";
+import Sidebar from "../components/Home/resume/Sidebar.jsx";
+import PersonalInfoForm from "../components/Home/resume/PersonalInfoForm.jsx";
+import EducationForm from "../components/Home/resume/EducationForm.jsx";
+import ExperienceForm from "../components/Home/resume/ExperienceForm.jsx";
+import SkillsForm from "../components/Home/resume/SkillsForm.jsx";
+import ProjectsForm from "../components/Home/resume/ProjectsForm.jsx";
+import ResumePreview from "../components/Home/resume/ResumePreview.jsx";
 
 const ResumeBuilder = () => {
   const navigate = useNavigate();
