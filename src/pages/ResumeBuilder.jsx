@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom"; // 👈 useSearchParams ko import kiya
 import API from "../api";
 
 import Sidebar from "../components/home/resume/Sidebar.jsx";
@@ -12,13 +12,27 @@ import ResumePreview from "../components/home/resume/ResumePreview.jsx";
 
 const ResumeBuilder = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams(); // 👈 URL se query params nikalne ke liye
+  const [loading, setLoading] = useState(false);
+
+  // -------------------------
+  // URL SE TEMPLATE DETECT KARNA
+  // -------------------------
+  // Home page se jo id aayegi usko dropdown ki simple/modern/creative values ke sath map kar rahe hain
+  const getInitialTemplate = () => {
+    const urlTemplate = searchParams.get("template");
+    
+    if (!urlTemplate) return "modern"; // Default fallback
+    if (urlTemplate.includes("minimal") || urlTemplate === "simple") return "simple";
+    if (urlTemplate.includes("creative") || urlTemplate.includes("edge")) return "creative";
+    return "modern"; // modern-pro ya baaki sab ke liye 'modern' layout
+  };
 
   // -------------------------
   // AUTH CHECK
   // -------------------------
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       navigate("/");
     }
@@ -28,7 +42,8 @@ const ResumeBuilder = () => {
   // STATE
   // -------------------------
   const [resumeData, setResumeData] = useState({
-    personalInfo: {},
+    title: "My Resume", 
+    personalInfo: { name: "", email: "", phone: "", location: "", summary: "" },
     education: [],
     experience: [],
     skills: [],
@@ -36,15 +51,20 @@ const ResumeBuilder = () => {
   });
 
   const [accentColor, setAccentColor] = useState("#22c55e");
-  const [template, setTemplate] = useState("modern");
+  const [template, setTemplate] = useState(getInitialTemplate()); // 👈 URL template parameter automatically set ho jayega
   const [activeSection, setActiveSection] = useState("Personal Info");
+
+  // Agar URL parameter badalta hai toh state update ho jaye uske liye effect
+  useEffect(() => {
+    setTemplate(getInitialTemplate());
+  }, [searchParams]);
 
   // -------------------------
   // COPY LINK
   // -------------------------
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href);
-    alert("Link copied!");
+    alert("Link copied! 🔗");
   };
 
   // -------------------------
@@ -59,10 +79,15 @@ const ResumeBuilder = () => {
   // -------------------------
   const saveResume = async () => {
     const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Session expired. Please login again.");
+      return;
+    }
 
     try {
+      setLoading(true);
       const res = await API.post(
-        "/api/resume",
+        "/api/resume", 
         {
           ...resumeData,
           template,
@@ -75,11 +100,14 @@ const ResumeBuilder = () => {
         }
       );
 
-      alert("Resume saved successfully 🚀");
+      alert("Resume saved successfully 🎉🚀");
       console.log(res.data);
+      navigate("/app"); 
     } catch (err) {
-      console.log(err.response?.data);
-      alert("Error saving resume");
+      console.error(err.response?.data);
+      alert(err.response?.data?.message || "Error saving resume");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,15 +116,25 @@ const ResumeBuilder = () => {
 
       {/* TOP BAR */}
       <div className="flex flex-wrap items-center justify-between px-6 py-3 border-b border-gray-800 bg-[#0a0f1f]">
+        
+        {/* TITLE INPUT */}
+        <div className="flex gap-2 items-center">
+          <span className="text-sm text-gray-400">Title:</span>
+          <input
+            type="text"
+            value={resumeData.title}
+            onChange={(e) => setResumeData({ ...resumeData, title: e.target.value })}
+            className="bg-gray-800 border border-white/10 px-3 py-1 rounded text-sm outline-none focus:border-green-500"
+          />
+        </div>
 
-        {/* TEMPLATE */}
+        {/* TEMPLATE DROPDOWN (Now Syncs with Landing Page) */}
         <div className="flex gap-3 items-center">
           <span className="text-sm text-gray-400">Template:</span>
-
           <select
             value={template}
             onChange={(e) => setTemplate(e.target.value)}
-            className="bg-gray-800 px-3 py-1 rounded"
+            className="bg-gray-800 px-3 py-1 rounded outline-none cursor-pointer border border-white/5 focus:border-green-500 text-sm"
           >
             <option value="simple">Simple</option>
             <option value="modern">Modern</option>
@@ -111,41 +149,39 @@ const ResumeBuilder = () => {
             type="color"
             value={accentColor}
             onChange={(e) => setAccentColor(e.target.value)}
-            className="w-10 h-8 cursor-pointer"
+            className="w-10 h-8 cursor-pointer rounded bg-transparent border-0"
           />
         </div>
 
         {/* ACTIONS */}
         <div className="flex gap-3">
-
           <button
             onClick={copyLink}
-            className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600"
+            className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 transition text-sm cursor-pointer"
           >
             🔗 Share
           </button>
 
-          {/* NEW SAVE BUTTON */}
           <button
             onClick={saveResume}
-            className="px-3 py-1 bg-blue-600 rounded hover:bg-blue-500"
+            disabled={loading}
+            className="px-3 py-1 bg-blue-600 disabled:bg-blue-800 rounded hover:bg-blue-500 transition text-sm font-medium cursor-pointer"
           >
-            💾 Save
+            {loading ? "Saving..." : "💾 Save"}
           </button>
 
           <button
             onClick={downloadResume}
-            className="px-3 py-1 bg-green-600 rounded hover:bg-green-500"
+            className="px-3 py-1 bg-green-600 rounded hover:bg-green-500 transition text-sm font-medium cursor-pointer"
           >
             📄 Download
           </button>
-
         </div>
       </div>
 
-      {/* MAIN */}
+      {/* MAIN CONTENT AREA */}
       <div className="grid lg:grid-cols-12 gap-6 p-6">
-
+        
         {/* SIDEBAR */}
         <div className="lg:col-span-2">
           <Sidebar
@@ -154,36 +190,27 @@ const ResumeBuilder = () => {
           />
         </div>
 
-        {/* FORMS */}
+        {/* DYNAMIC FORMS */}
         <div className="lg:col-span-5 space-y-6">
-
-          <PersonalInfoForm
-            setResumeData={setResumeData}
-          />
-
-          <EducationForm
-            setResumeData={setResumeData}
-          />
-
-          <ExperienceForm
-            setResumeData={setResumeData}
-          />
-
-          <SkillsForm
-            setResumeData={setResumeData}
-          />
-
-          <ProjectsForm
-            setResumeData={setResumeData}
-          />
-
+          {activeSection === "Personal Info" && (
+            <PersonalInfoForm resumeData={resumeData} setResumeData={setResumeData} />
+          )}
+          {activeSection === "Education" && (
+            <EducationForm resumeData={resumeData} setResumeData={setResumeData} />
+          )}
+          {activeSection === "Experience" && (
+            <ExperienceForm resumeData={resumeData} setResumeData={setResumeData} />
+          )}
+          {activeSection === "Skills" && (
+            <SkillsForm resumeData={resumeData} setResumeData={setResumeData} />
+          )}
+          {activeSection === "Projects" && (
+            <ProjectsForm resumeData={resumeData} setResumeData={setResumeData} />
+          )}
         </div>
 
-        {/* PREVIEW */}
-        <div
-          className="lg:col-span-5"
-          id="resume-print-area"
-        >
+        {/* PREVIEW CONTAINER */}
+        <div className="lg:col-span-5" id="resume-print-area">
           <ResumePreview
             resumeData={resumeData}
             accentColor={accentColor}

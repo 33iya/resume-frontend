@@ -1,9 +1,8 @@
 import axios from "axios";
 
 const API = axios.create({
-  // ❌ Agar yahan onrender ka link hai toh use hataiye
-  // ✅ Localhost ka link daliye:
-  baseURL: "https://resume-backend-3-pfp2.onrender.com",
+  // ✅ Humne render ka link hata kar localhost ka link daal diya hai
+  baseURL: "https://resume-backend-3-pfp2.onrender.com" 
 });
 
 API.interceptors.request.use((req) => {

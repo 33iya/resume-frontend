@@ -3,28 +3,32 @@ import { motion } from "framer-motion";
 
 const templates = [
   {
+    id: "modern-pro",
     name: "Modern Pro",
     ats: "98%",
     tag: "Most Popular",
   },
   {
+    id: "minimal-ats",
     name: "Minimal ATS",
     ats: "96%",
     tag: "Recruiter Choice",
   },
   {
+    id: "creative-edge",
     name: "Creative Edge",
     ats: "94%",
     tag: "Trending",
   },
   {
+    id: "corporate-elite",
     name: "Corporate Elite",
     ats: "99%",
     tag: "Premium",
   },
 ];
 
-const Templates = () => {
+const Templates = ({ onSelectTemplate }) => {
   return (
     <section
       id="templates"
@@ -32,7 +36,6 @@ const Templates = () => {
     >
       {/* Background Glow */}
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-green-500/10 blur-[180px] rounded-full" />
-
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-500/10 blur-[180px] rounded-full" />
 
       <div className="max-w-7xl mx-auto px-6">
@@ -53,8 +56,7 @@ const Templates = () => {
         </h2>
 
         <p className="text-center text-gray-400 mt-6 max-w-2xl mx-auto">
-          Professionally designed ATS-friendly templates
-          optimized for modern hiring systems.
+          Professionally designed ATS-friendly templates optimized for modern hiring systems.
         </p>
 
         {/* Templates Grid */}
@@ -68,7 +70,8 @@ const Templates = () => {
                 scale: 1.03,
               }}
               transition={{ duration: 0.3 }}
-              className="group relative"
+              className="group relative cursor-pointer"
+              onClick={() => onSelectTemplate(template.id)}
             >
               <div className="bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-4 overflow-hidden">
 
@@ -86,61 +89,47 @@ const Templates = () => {
                   </span>
                 </div>
 
-                {/* Resume Preview */}
+                {/* Resume Preview Layout */}
                 <div className="h-[380px] bg-white rounded-2xl p-4 relative overflow-hidden">
-
                   <div className="w-20 h-20 rounded-full bg-gray-300 mx-auto"></div>
-
                   <div className="mt-4 space-y-3">
-
                     <div className="h-3 bg-gray-300 rounded"></div>
-
                     <div className="h-3 bg-gray-300 rounded"></div>
-
                     <div className="h-3 bg-gray-300 rounded"></div>
-
                     <div className="h-3 bg-gray-300 rounded w-2/3"></div>
-
                   </div>
-
                   <div className="mt-8 space-y-3">
-
                     <div className="h-2 bg-gray-200 rounded"></div>
-
                     <div className="h-2 bg-gray-200 rounded"></div>
-
                     <div className="h-2 bg-gray-200 rounded"></div>
-
                     <div className="h-2 bg-gray-200 rounded w-3/4"></div>
-
                   </div>
 
                   {/* Hover Overlay */}
                   <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col items-center justify-center">
-
-                    <button className="bg-green-500 hover:bg-green-400 text-black font-semibold px-6 py-3 rounded-full">
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation(); // Stops nested click panga
+                        onSelectTemplate(template.id);
+                      }}
+                      className="bg-green-500 hover:bg-green-400 text-black font-semibold px-6 py-3 rounded-full cursor-pointer"
+                    >
                       Use Template
                     </button>
-
-                    <button className="mt-3 border border-white/20 px-6 py-3 rounded-full">
+                    <button className="mt-3 border border-white/20 px-6 py-3 rounded-full hover:bg-white/10 transition">
                       Preview
                     </button>
-
                   </div>
-
                 </div>
 
                 {/* Bottom Info */}
                 <div className="mt-5">
-
-                  <h3 className="font-semibold text-lg">
+                  <h3 className="font-semibold text-lg group-hover:text-green-400 transition">
                     {template.name}
                   </h3>
-
                   <p className="text-sm text-gray-400 mt-2">
                     Optimized for ATS systems and recruiters.
                   </p>
-
                 </div>
 
               </div>
@@ -151,27 +140,21 @@ const Templates = () => {
 
         {/* Bottom CTA */}
         <div className="mt-24 text-center">
-
           <div className="inline-block bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-8">
-
-            <h3 className="text-3xl font-bold">
-              Can't Decide?
-            </h3>
-
+            <h3 className="text-3xl font-bold">Can't Decide?</h3>
             <p className="text-gray-400 mt-3">
               Let AI recommend the best template for your career.
             </p>
-
-            <button className="mt-6 bg-green-600 hover:bg-green-700 px-8 py-3 rounded-full font-semibold">
+            <button 
+              onClick={() => onSelectTemplate("ai-recommended")}
+              className="mt-6 bg-green-600 hover:bg-green-700 px-8 py-3 rounded-full font-semibold cursor-pointer transition"
+            >
               🤖 AI Recommend Me
             </button>
-
             <p className="mt-5 text-sm text-pink-400">
               ❤️ Crafted by Priyashi
             </p>
-
           </div>
-
         </div>
 
       </div>

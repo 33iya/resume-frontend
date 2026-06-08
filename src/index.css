@@ -10,3 +10,69 @@
         cursor: pointer;
     }
 }
+
+/* ==========================================
+   🔥 PRINT AND DOWNLOAD SPECIFIC CSS RULES
+   ========================================== */
+@media print {
+  /* 1. App UI ke saare elements (sidebar, layout background, forms, controls) ko hide karein */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* 2. Sirf humare printable resume structure aur uske content ko read aur render karein */
+  .printable-resume-card, .printable-resume-card * {
+    visibility: visible !important;
+  }
+
+  /* 3. Card ko pure target white page layout par top-left align karein */
+  .printable-resume-card {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  /* 4. MODERN TEMPLATE OVERRIDE (Dark theme ko text visible karne ke liye print safe light banana) */
+  .resume-template-modern {
+    background: white !important;
+    color: #1e293b !important; /* slate-800 text */
+    border: none !important;
+  }
+  .resume-template-modern .info-text {
+    color: #475569 !important; /* slate-600 */
+  }
+  .resume-template-modern .summary-text {
+    color: #334155 !important;
+  }
+  .resume-template-modern .heading-modern {
+    border-bottom-color: #cbd5e1 !important; /* light gray line */
+  }
+  .resume-template-modern .skill-badge {
+    background: #f1f5f9 !important; /* light background gray */
+    color: #0f172a !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+  .resume-template-modern .project-desc {
+    color: #475569 !important;
+  }
+
+  /* 5. CREATIVE SIDEBAR INTENSITY CONTROL FOR PRINT BACKGROUNDS */
+  .creative-sidebar {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Page setup properties margin handling */
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+}
