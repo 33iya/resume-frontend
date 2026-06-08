@@ -30,7 +30,6 @@ const PersonalInfoForm = ({ resumeData, setResumeData }) => {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     
-    // Auto suggest summaries when user types a role
     if (e.target.name === "role") {
       const val = e.target.value.toLowerCase();
       if (val.includes("back")) {
@@ -74,12 +73,17 @@ const PersonalInfoForm = ({ resumeData, setResumeData }) => {
         <input name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} className="w-full p-3 rounded bg-white/10 outline-none focus:border-green-500 border border-transparent" />
         <input name="location" placeholder="Location" value={form.location} onChange={handleChange} className="w-full p-3 rounded bg-white/10 outline-none focus:border-green-500 border border-transparent" />
         
+        {/* 🔥 FIXED: Profile Picture URL Input field yahan add ho gaya hai */}
+        <div>
+          <label className="block text-xs text-gray-400 mb-1">Profile Picture URL</label>
+          <input name="profilePic" placeholder="Paste image link (e.g., https://imgur.com/xyz.jpg)" value={form.profilePic} onChange={handleChange} className="w-full p-3 rounded bg-white/10 outline-none focus:border-green-500 border border-transparent" />
+        </div>
+
         <div>
           <label className="block text-xs text-gray-400 mb-1">Target Job Role (Type to see AI ideas below)</label>
           <input name="role" placeholder="Target Job Role (e.g., Backend Developer)" value={form.role} onChange={handleChange} className="w-full p-3 rounded bg-white/10 outline-none focus:border-blue-500 border border-transparent text-green-400" />
         </div>
 
-        {/* 🤖 SMART AI SUGGESTION TILES */}
         {aiSuggestions.length > 0 && (
           <div className="bg-blue-950/40 p-4 rounded-xl border border-blue-500/20 space-y-2">
             <p className="text-xs font-semibold text-blue-400">✨ Click an AI suggestion to insert instantly:</p>
